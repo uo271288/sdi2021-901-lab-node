@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %} Agregar autor {% endblock %}
+{% block contenido_principal %}
+<h2>Agregar autor</h2>
+<form class="form-horizontal" method="post" action="/autor">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="nombreAutor">Nombre:</label>
+        <div class="col-sm-10"><input type="text" class="form-control" name="nombreAutor"
+                                      placeholder="Rulo" required="true"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="rol">Rol:</label>
+        <div class="col-sm-10"><select class="form-control" name="rol" required="true">
+            <option value="cantante">Cantante</option>
+            <option value="bateria">Batería</option>
+            <option value="guitarrista">Guitarrista</option>
+            <option value="bajista">Bajista</option>
+            <option value="teclista">Teclista</option>
+        </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="grupo">Grupo:</label>
+        <div class="col-sm-10"><input type="text" class="form-control" name="grupo"
+                                      placeholder="Rulo y la contrabanda" required="true"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
