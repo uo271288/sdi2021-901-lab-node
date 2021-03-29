@@ -11,13 +11,22 @@
     </div>
     <div class="form-group">
         <label class="control-label col-sm-2" for="rol">Rol:</label>
-        <div class="col-sm-10"><select class="form-control" name="rol" required="true">
-            <option value="cantante">Cantante</option>
-            <option value="bateria">Batería</option>
-            <option value="guitarrista">Guitarrista</option>
-            <option value="bajista">Bajista</option>
-            <option value="teclista">Teclista</option>
-        </select>
+        <div class="col-sm-10">
+            <!--
+            <select class="form-control" name="rol" required="true">
+                <option value="cantante">Cantante</option>
+                <option value="bateria">Batería</option>
+                <option value="guitarrista">Guitarrista</option>
+                <option value="bajista">Bajista</option>
+                <option value="teclista">Teclista</option>
+            </select>
+            -->
+
+                <select class="form-control" name="rol" required="true">
+                    {% for rol in roles %}
+                    <option value={{rol.prop}}>{{rol.nombre}}</option>
+                    {% endfor %}
+                </select>
         </div>
     </div>
     <div class="form-group">
