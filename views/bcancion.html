@@ -13,13 +13,13 @@
             <p>{{ cancion.autor }}</p>
             <p>{{ cancion.genero }}</p>
             <button type="button" class="btn btn-primary pull-right">{{ cancion.precio }} €</button>
-            <!-- Cambiar el precio por "reproducir" si ya está comprada -->
+
         </div>
     </div>
 </div>
 
 <!-- -->
-<div class="row" style="margin-top: 20px;">
+<div class="row" style="margin-top: 20px;"><!--
     <div class="media col-xs-10">
         <div class="media-left media-middle">
             <a href="#">
@@ -57,7 +57,32 @@
             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras
             purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
             fringilla. Donec lacinia congue felis in faucibus.
+        </div>
+    </div>
+    -->
+    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+        <div style="width: 200px">
+            {% for comentario in comentarios %}
+            <div class="wrap">{{ comentario.autor }}</div>
+            <div class="small">{{ comentario.texto }}</div>
+            {% endfor %}
+            <!-- Cambiar el precio por "reproducir" si ya está comprada -->
         </div>
     </div>
 </div>
+<form class="form-horizontal" method="post" action="/comentarios/{{ cancion._id.toString() }}" encType="multipart/form-data">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="texto">Texto:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="texto"
+                   placeholder="Increíble" required="true"
+                   value="{{ comentario.texto }}" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Comentar</button>
+        </div>
+    </div>
+</form>
 {% endblock %}
