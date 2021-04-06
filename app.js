@@ -27,7 +27,6 @@ routerUsuarioSession.use(function (req, res, next) {
         res.redirect("/identificarse");
     }
 });
-
 //Aplicar routerUsuarioSession
 app.use("/canciones/agregar", routerUsuarioSession);
 app.use("/publicaciones", routerUsuarioSession);
@@ -60,9 +59,29 @@ routerComentarios.use(function (req, res, next) {
         res.send("No has iniciado sesión");
     }
 });
-
 //Aplicar routerAudios
 app.use("/comentarios/:cancion_id", routerComentarios);
+
+//routerUsuarioAutor
+let routerUsuarioAutor = express.Router();
+routerUsuarioAutor.use(function (req, res, next) {
+    console.log("routerUsuarioAutor");
+    let path = require('path');
+    let id = path.basename(req.originalUrl);
+    // Cuidado porque req.params no funciona en el router si los params van en la URL.
+    gestorBD.obtenerCanciones({_id: mongo.ObjectID(id)}, function (canciones) {
+        console.log(canciones[0]);
+        if (canciones[0].autor == req.session.usuario) {
+            next();
+        } else {
+            res.redirect("/tienda");
+        }
+    })
+});
+//Aplicar
+routerUsuarioAutor
+app.use("/cancion/modificar", routerUsuarioAutor);
+app.use("/cancion/eliminar", routerUsuarioAutor);
 
 app.use(express.static('public'));
 
