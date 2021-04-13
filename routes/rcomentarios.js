@@ -8,7 +8,10 @@ module.exports = function (app, swig, gestorBD) {
         } // Conectarse
         gestorBD.insertarComentario(comentario, function (cancion_id) {
             if (cancion_id == null) {
-                res.send("Error al comentar");
+                let respuesta = swig.renderFile('views/error.html', {
+                    error: "Error al comentar"
+                });
+                res.send(respuesta);
             } else {
                 res.send("Agregado");
             }

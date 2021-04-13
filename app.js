@@ -67,7 +67,10 @@ routerComentarios.use(function (req, res, next) {
         // dejamos correr la petición
         next();
     } else {
-        res.send("No has iniciado sesión");
+        let respuesta = swig.renderFile('views/error.html', {
+            error: "No has iniciado sesión"
+        });
+        res.send(respuesta);
     }
 });
 //Aplicar routerAudios
@@ -139,7 +142,10 @@ app.use(function (err, req, res, next) {
     console.log("Error producido: " + err); // mostramos el error en consola
     if (!res.headersSent) {
         res.status(400);
-        res.send("recurso no disponible");
+        let respuesta = swig.renderFile('views/error.html', {
+            error: "Recurso no disponible"
+        });
+        res.send(respuesta);
     }
 });
 
