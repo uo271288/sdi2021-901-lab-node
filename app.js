@@ -89,10 +89,33 @@ routerUsuarioAutor.use(function (req, res, next) {
         }
     })
 });
-//Aplicar
-routerUsuarioAutor
+//Aplicar routerUsuarioAutor
 app.use("/cancion/modificar", routerUsuarioAutor);
 app.use("/cancion/eliminar", routerUsuarioAutor);
+
+//routerCompras
+let routerCompras = express.Router();
+routerCompras.use(function (req, res, next) {
+    console.log("routerCompras");
+    let path = require('path');
+    let id = path.basename(req.originalUrl);
+    gestorBD.obtenerCanciones({_id: mongo.ObjectID(id)}, function (canciones) {
+        if (req.session.usuario && canciones[0].autor == req.session.usuario) {
+            res.redirect("/tienda");
+        } else {
+            let criterioCompra = {"cancionId": mongo.ObjectID(id)};
+            gestorBD.obtenerCompras(criterioCompra, function (compras) {
+                if (compras <= 0) {
+                    next();
+                } else {
+                    res.redirect("/tienda");
+                }
+            });
+        }
+    });
+});
+//Aplicar routerCompras
+app.use("/cancion/comprar/:id", routerCompras);
 
 app.use(express.static('public'));
 

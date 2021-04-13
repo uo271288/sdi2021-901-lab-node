@@ -109,21 +109,30 @@ module.exports = function (app, swig, gestorBD) {
                 res.send("Error al recuperar la canción.");
             } else {
                 let criterioComentario = {"cancion_id": gestorBD.mongo.ObjectID(req.params.id)};
+                let criterioCompra = {"cancionId": gestorBD.mongo.ObjectID(req.params.id)};
+                let comprado = false;
                 gestorBD.obtenerComentarios(criterioComentario, function (comentarios) {
-                    if (comentarios == null) {
-                        let respuesta = swig.renderFile('views/bcancion.html',
-                            {
-                                cancion: canciones[0]
-                            });
-                        res.send(respuesta);
-                    } else {
-                        let respuesta = swig.renderFile('views/bcancion.html',
-                            {
-                                cancion: canciones[0],
-                                comentarios: comentarios
-                            });
-                        res.send(respuesta);
-                    }
+                    gestorBD.obtenerCompras(criterioCompra, function (compras) {
+                        if (canciones[0].autor == req.session.usuario || (compras.length > 0 && compras[0].usuario == req.session.usuario))
+                            comprado = true
+                        if (comentarios == null) {
+                            let respuesta = swig.renderFile('views/bcancion.html',
+                                {
+                                    comprado: comprado,
+                                    cancion: canciones[0]
+                                });
+                            res.send(respuesta);
+                        } else {
+                            let respuesta = swig.renderFile('views/bcancion.html',
+                                {
+                                    comprado: comprado,
+                                    cancion: canciones[0],
+                                    comentarios: comentarios
+                                });
+                            res.send(respuesta);
+                        }
+                    })
+
                 });
             }
         });
