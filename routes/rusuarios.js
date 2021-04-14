@@ -4,7 +4,16 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.get("/registrarse", function (req, res) {
-        let respuesta = swig.renderFile('views/bregistro.html', {});
+        let respuesta;
+        if (typeof (req.session.errores) != "undefined") {
+
+            respuesta = swig.renderFile('views/bregistro.html', {
+                mensaje: req.session.errores.mensaje,
+                tipo: req.session.errores.tipo
+            });
+            delete req.session.errores;
+        } else
+            respuesta = swig.renderFile('views/bregistro.html', {});
         res.send(respuesta);
     });
 
@@ -17,16 +26,34 @@ module.exports = function (app, swig, gestorBD) {
         }
 
         gestorBD.insertarUsuario(usuario, function (id) {
+
             if (id == null) {
-                res.redirect("/registrarse?mensaje=Error al registrar usuario");
+                req.session.errores = {
+                    mensaje: "Error al registrar usuario",
+                    tipo: "alert alert-danger"
+                }
+                res.redirect("/registrarse");
             } else {
-                res.redirect("/registrarse?mensaje=Nuevo usuario registrado");
+                req.session.errores = {
+                    mensaje: "Nuevo usuario registrado",
+                    tipo: "alert alert-info"
+                }
+                res.redirect("/registrarse");
             }
         });
     });
 
     app.get("/identificarse", function (req, res) {
-        let respuesta = swig.renderFile('views/bidentificacion.html', {});
+        let respuesta;
+        if (typeof (req.session.errores) != "undefined") {
+
+            respuesta = swig.renderFile('views/bidentificacion.html', {
+                mensaje: req.session.errores.mensaje,
+                tipo: req.session.errores.tipo
+            });
+            delete req.session.errores;
+        } else
+            respuesta = swig.renderFile('views/bidentificacion.html', {});
         res.send(respuesta);
     });
 
@@ -40,7 +67,11 @@ module.exports = function (app, swig, gestorBD) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
-                res.redirect("/identificarse" + "?mensaje=Email o password incorrecto" + "&tipoMensaje=alert-danger ");
+                req.session.errores = {
+                    mensaje: "Email o password incorrecto",
+                    tipo: "alert alert-danger"
+                }
+                res.redirect("/identificarse");
             } else {
                 req.session.usuario = usuarios[0].email;
                 res.redirect("/publicaciones");
