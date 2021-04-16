@@ -13,7 +13,8 @@
             <p>{{ cancion.autor }}</p>
             <p>{{ cancion.genero }}</p>
             {%if comprado == false%}
-            <a class="btn btn-primary pull-right" href="/cancion/comprar/{{cancion._id.toString()}}">{{ cancion.precio }} €</a>
+            <a class="btn btn-primary pull-right" href="/cancion/comprar/{{cancion._id.toString()}}">{{ cancion.precio
+                }} € - {{ cancion.usd }} $</a>
             {%else%}
             <audio controls>
                 <source src="/audios/{{ cancion._id.toString() }}.mp3" type="audio/mpeg">
@@ -76,13 +77,14 @@
     </div>
 </div>
 
-<form class="form-horizontal" method="post" action="/comentarios/{{ cancion._id.toString() }}" encType="multipart/form-data">
+<form class="form-horizontal" method="post" action="/comentarios/{{ cancion._id.toString() }}"
+      encType="multipart/form-data">
     <div class="form-group">
         <label class="control-label col-sm-2" for="texto">Texto:</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" name="texto"
                    placeholder="Increíble" required="true"
-                   value="{{ comentario.texto }}" />
+                   value="{{ comentario.texto }}"/>
         </div>
     </div>
     <div class="form-group">
