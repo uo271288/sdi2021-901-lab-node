@@ -26,24 +26,25 @@ module.exports = function (app, gestorBD) {
 
     app.delete("/api/cancion/:id", function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
-        /*gestorBD.obtenerCanciones(criterio, function (canciones) {
+
+        gestorBD.obtenerCanciones(criterio, function (canciones) {
             console.log(criterio);
             console.log(canciones);
-            if (canciones != null && canciones[0].autor != req.session.usuario) {
+            if (canciones != null && canciones[0].autor != res.usuario) {
                 res.status(500);
                 res.json({error: "No puedes eliminar una canción que no es tuya"})
-            } else*/
-        gestorBD.eliminarCancion(criterio, function (canciones) {
-            if (canciones == null) {
-                res.status(500);
-                res.json({error: "se ha producido un error"})
             } else {
-                res.status(200);
-                res.send(JSON.stringify(canciones));
+                gestorBD.eliminarCancion(criterio, function (canciones) {
+                    if (canciones == null) {
+                        res.status(500);
+                        res.json({error: "se ha producido un error"})
+                    } else {
+                        res.status(200);
+                        res.send(JSON.stringify(canciones));
+                    }
+                });
             }
         });
-        /*});*/
-
     });
 
     app.post("/api/cancion", function (req, res) {
@@ -73,25 +74,29 @@ module.exports = function (app, gestorBD) {
         if (req.body.nombre != null) cancion.nombre = req.body.nombre;
         if (req.body.genero != null) cancion.genero = req.body.genero;
         if (req.body.precio != null) cancion.precio = req.body.precio;
-        /*gestorBD.obtenerCanciones(criterio, function (canciones) {
-            console.log(criterio);
-            console.log(canciones);
-            console.log(req.session.tok);
-            if (canciones != null && canciones[0].autor != req.session.usuario) {
-                res.status(500);
-                res.json({error: "No puedes modificar una canción que no es tuya"})
-            } else
-                */
-        gestorBD.modificarCancion(criterio, cancion, function (result) {
-            if (result == null) {
-                res.status(500);
-                res.json({error: "se ha producido un error"})
-            } else {
-                res.status(200);
-                res.json({mensaje: "canción modificada", _id: req.params.id})
-            }
-        });
-        /*});*/
+        if (req.body.precio < 0 || req.body.nombre.length < 5 || req.body.nombre.length > 25) {
+            res.status(500);
+            res.json({error: "se ha producido un error"})
+        } else {
+            gestorBD.obtenerCanciones(criterio, function (canciones) {
+                console.log(criterio);
+                console.log(canciones);
+                if (canciones != null && canciones[0].autor != res.usuario) {
+                    res.status(500);
+                    res.json({error: "No puedes modificar una canción que no es tuya"})
+                } else {
+                    gestorBD.modificarCancion(criterio, cancion, function (result) {
+                        if (result == null) {
+                            res.status(500);
+                            res.json({error: "se ha producido un error"})
+                        } else {
+                            res.status(200);
+                            res.json({mensaje: "canción modificada", _id: req.params.id})
+                        }
+                    });
+                }
+            })
+        }
     });
 
     app.post("/api/autenticar/", function (req, res) {
